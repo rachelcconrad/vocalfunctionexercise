@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#182B49">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VFE Practice">
+  <meta name="description" content="Guided home practice for Vocal Function Exercises — Stemple Method">
+  <title>Vocal Function Exercises</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#182B49; --navy-mid:#1e3a63; --navy-light:#e8edf4; --navy-faint:#f2f5f9;
+      --blue:#006A96; --blue-light:#e0f0f7;
+      --gold:#C69214; --gold-light:#faf3e0; --gold-dark:#9a6f0a; --gold-mid:#e8c96a;
+      --green:#1a7a4a; --green-light:#e6f4ec;
+      --red:#c0392b;
+      --text:#182B49; --text-mid:#3d5a80; --text-muted:#6b7f9a;
+      --border:#d0daea; --surface:#f5f7fb; --white:#ffffff;
+      --r-sm:8px; --r-md:12px; --r-lg:16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text);
+      background: var(--surface);
+      overscroll-behavior: none;
+    }
+    #vfe { max-width: 580px; margin: 0 auto; padding-bottom: 3rem; min-height: 100vh; }
+
+    /* Header */
+    .hdr { background: var(--navy); padding: 18px 24px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+    .hdr-titles { flex: 1; }
+    .hdr-title { font-family: 'Source Serif 4', serif; font-size: 17px; font-weight: 400; color: #fff; letter-spacing: 0.01em; }
+    .hdr-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hdr-chip { font-size: 11px; color: rgba(255,255,255,0.6); cursor: pointer; display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; transition: background 0.12s; }
+    .hdr-chip:hover { background: rgba(255,255,255,0.1); }
+    .hdr-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .prog-strip { background: rgba(24,43,73,0.15); height: 4px; }
+    .prog-fill { height: 4px; background: var(--gold); transition: width 0.5s ease; }
+
+    /* Screens */
+    .screen { display: none; } .screen.active { display: block; }
+
+    /* Gender screen */
+    .gender-wrap { padding: 32px 24px; }
+    .g-eyebrow { font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .g-heading { font-family: 'Source Serif 4', serif; font-size: 26px; font-weight: 400; color: var(--navy); line-height: 1.25; margin-bottom: 10px; }
+    .g-sub { font-size: 14px; color: var(--text-muted); line-height: 1.65; margin-bottom: 28px; }
+    .g-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .g-card { background: var(--white); border: 2px solid var(--border); border-radius: var(--r-lg); padding: 28px 16px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s; }
+    .g-card:hover { border-color: var(--blue); box-shadow: 0 4px 18px rgba(24,43,73,0.1); transform: translateY(-2px); }
+    .g-card:active { transform: translateY(0); }
+    .g-sym { width: 56px; height: 56px; background: var(--navy-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 22px; color: var(--navy); }
+    .g-lbl { font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+    .g-note { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .g-banner { background: var(--blue-light); border-left: 3px solid var(--blue); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 13px 16px; font-size: 13px; color: var(--navy); line-height: 1.65; }
+
+    /* Done screen */
+    .done-wrap { padding: 48px 28px 32px; text-align: center; }
+    .done-icon { width: 72px; height: 72px; background: var(--gold-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px; }
+    .done-heading { font-family: 'Source Serif 4', serif; font-size: 26px; font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+    .done-sub { font-size: 15px; color: var(--text-muted); line-height: 1.65; margin-bottom: 28px; }
+    .done-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+    .done-stat { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px 10px; text-align: center; }
+    .done-stat-val { font-size: 26px; font-weight: 300; color: var(--navy); }
+    .done-stat-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+    .done-btn { display: block; width: 100%; padding: 14px; font-size: 15px; font-weight: 600; background: var(--navy); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: 'Source Sans 3', sans-serif; transition: opacity 0.12s; margin-bottom: 10px; }
+    .done-btn:hover { opacity: 0.88; }
+    .done-btn-sec { display: block; width: 100%; padding: 12px; font-size: 14px; font-weight: 500; background: transparent; color: var(--blue); border: 1.5px solid var(--border); border-radius: var(--r-md); cursor: pointer; font-family: 'Source Sans 3', sans-serif; transition: background 0.12s; }
+    .done-btn-sec:hover { background: var(--navy-light); }
+
+    /* Exercise screen */
+    .ex-wrap { padding: 20px 24px; }
+    .step-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .step-pip { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; border: 2px solid var(--border); color: var(--text-muted); background: var(--white); transition: all 0.2s; flex-shrink: 0; }
+    .step-pip.done-pip { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .step-pip.active-pip { background: var(--gold); border-color: var(--gold-dark); color: var(--navy); }
+    .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 1px; }
+    .step-line.done-line { background: var(--navy); }
+    .ex-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; margin-bottom: 14px; box-shadow: 0 1px 6px rgba(24,43,73,0.05); }
+    .ex-badge { display: inline-block; background: var(--gold-light); border: 1px solid var(--gold-mid); color: var(--gold-dark); font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.02em; }
+    .ex-title { font-family: 'Source Serif 4', serif; font-size: 22px; font-weight: 400; color: var(--navy); margin-bottom: 4px; }
+    .ex-word { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+    .ex-word strong { color: var(--blue); font-weight: 600; }
+    .ex-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 16px; padding: 14px; background: var(--navy-faint); border-radius: var(--r-sm); border-left: 3px solid var(--navy-light); }
+    .target-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .target-pill { background: var(--navy-light); color: var(--navy); border: 1px solid #b8c8de; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px; }
+    .clabel { font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .tone-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tone-btn { padding: 8px 18px; font-size: 13px; font-weight: 600; background: var(--white); border: 1.5px solid var(--navy); border-radius: var(--r-sm); cursor: pointer; color: var(--navy); transition: background 0.12s, color 0.12s; font-family: 'Source Sans 3', sans-serif; }
+    .tone-btn:hover { background: var(--navy-light); }
+    .tone-btn.playing { background: var(--navy); color: #fff; }
+    .glide-tip { background: var(--blue-light); border-left: 3px solid var(--blue); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 12px 14px; font-size: 13px; color: var(--navy); line-height: 1.65; margin-bottom: 16px; }
+
+    /* Power grid */
+    .power-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 16px; }
+    .pnc { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-md); padding: 10px 4px; text-align: center; transition: all 0.15s; }
+    .pnc.active-note { border-color: var(--gold); background: var(--gold-light); }
+    .pnc.done-note { border-color: var(--green); background: var(--green-light); }
+    .pnc-name { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 1px; }
+    .pnc.active-note .pnc-name { color: var(--gold-dark); }
+    .pnc.done-note .pnc-name { color: var(--green); }
+    .pnc-freq { font-size: 9px; color: var(--text-muted); margin-bottom: 5px; }
+    .pnc-tbtn { width: 100%; padding: 5px 2px; font-size: 10px; font-weight: 600; background: var(--navy-light); border: 1px solid var(--border); border-radius: 5px; cursor: pointer; color: var(--navy); font-family: 'Source Sans 3', sans-serif; transition: background 0.1s, color 0.1s; margin-bottom: 5px; }
+    .pnc.active-note .pnc-tbtn { background: var(--gold); border-color: var(--gold-dark); color: var(--navy); }
+    .pnc.done-note .pnc-tbtn { background: var(--green-light); border-color: var(--green); color: var(--green); }
+    .pnc-tbtn.playing { background: var(--navy) !important; color: #fff !important; border-color: var(--navy) !important; }
+    .pnc-status { font-size: 10px; font-weight: 600; min-height: 13px; color: var(--text-muted); }
+    .pnc.active-note .pnc-status { color: var(--gold-dark); }
+    .pnc.done-note .pnc-status { color: var(--green); }
+    .pnc-timer { font-size: 10px; font-variant-numeric: tabular-nums; min-height: 14px; color: var(--text-muted); margin-top: 1px; }
+    .pnc.active-note .pnc-timer { color: var(--gold-dark); font-weight: 600; }
+
+    /* Timer */
+    .timer-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+    svg.timer-ring { transform: rotate(-90deg); display: block; flex-shrink: 0; }
+    .timer-right { flex: 1; }
+    .timer-display { font-size: 40px; font-weight: 300; color: var(--navy); font-variant-numeric: tabular-nums; letter-spacing: -2px; line-height: 1; }
+    .timer-dec { font-size: 26px; color: var(--text-muted); }
+    .timer-status { font-size: 13px; color: var(--text-muted); margin-top: 4px; min-height: 20px; }
+    .timer-status.phonating { color: var(--green); font-weight: 600; }
+    .timer-best { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .timer-best strong { color: var(--navy); }
+
+    /* Pitch monitor */
+    .pitch-mon { background: var(--navy); border-radius: var(--r-md); padding: 16px; margin-bottom: 14px; }
+    .pitch-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .pitch-hz { font-size: 30px; font-weight: 300; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -1px; }
+    .pitch-hz span { font-size: 16px; color: rgba(255,255,255,0.45); margin-left: 3px; }
+    .pitch-note-lbl { font-size: 24px; font-weight: 600; color: var(--gold); font-variant-numeric: tabular-nums; }
+    .pitch-canvas-wrap { height: 60px; background: rgba(255,255,255,0.06); border-radius: var(--r-sm); overflow: hidden; margin-bottom: 10px; }
+    canvas#pitch-canvas { width: 100%; height: 60px; display: block; }
+    .pitch-bar-wrap { height: 8px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    #pitch-bar { height: 100%; width: 0%; border-radius: 4px; background: var(--gold); transition: width 0.08s, background 0.1s; }
+    .pitch-zones { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+    .mic-row { display: flex; justify-content: space-between; align-items: center; }
+    .mic-btn { display: flex; align-items: center; gap: 8px; padding: 9px 16px; font-size: 13px; font-weight: 500; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); border-radius: var(--r-sm); cursor: pointer; color: #fff; transition: background 0.12s; font-family: 'Source Sans 3', sans-serif; }
+    .mic-btn:hover { background: rgba(255,255,255,0.22); }
+    .mic-btn.active { background: rgba(198,146,20,0.22); border-color: rgba(198,146,20,0.6); color: var(--gold); }
+    .mic-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .mic-dot.pulse { animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .mic-hint { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+    /* Sets */
+    .sets-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-md); padding: 16px; margin-bottom: 14px; }
+    .sets-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .sets-title { font-size: 14px; font-weight: 600; color: var(--navy); }
+    .sets-note { font-size: 12px; color: var(--text-muted); }
+    .sets-row { display: flex; gap: 10px; align-items: center; }
+    .set-bub { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
+    .set-bub.done { background: var(--navy); border-color: var(--navy); color: #fff; }
+    @keyframes bub-flash { 0%{transform:scale(1)} 40%{transform:scale(1.3)} 100%{transform:scale(1)} }
+    .set-bub.flash { animation: bub-flash 0.35s ease-out; }
+
+    /* Next / skip */
+    .next-btn { display: block; width: 100%; padding: 15px; font-size: 15px; font-weight: 600; background: var(--navy); color: #fff; border: none; border-radius: var(--r-md); cursor: pointer; font-family: 'Source Sans 3', sans-serif; transition: opacity 0.12s; margin-bottom: 8px; opacity: 0.3; pointer-events: none; }
+    .next-btn.ready { opacity: 1; pointer-events: auto; }
+    .next-btn.ready:hover { opacity: 0.88; }
+    .skip-btn { display: block; width: 100%; padding: 10px; font-size: 13px; color: var(--text-muted); background: transparent; border: none; cursor: pointer; font-family: 'Source Sans 3', sans-serif; text-decoration: underline; }
+    .skip-btn:hover { color: var(--navy); }
+
+    /* Install prompt banner */
+    #install-banner { display: none; background: var(--gold-light); border: 1px solid var(--gold-mid); border-radius: var(--r-md); margin: 12px 24px; padding: 12px 16px; font-size: 13px; color: var(--navy); line-height: 1.5; }
+    #install-banner .ib-row { display: flex; align-items: center; gap: 10px; }
+    #install-banner button { padding: 7px 14px; font-size: 13px; font-weight: 600; background: var(--navy); color: #fff; border: none; border-radius: var(--r-sm); cursor: pointer; font-family: 'Source Sans 3', sans-serif; white-space: nowrap; }
+    #install-banner .ib-dismiss { background: transparent; color: var(--text-muted); font-size: 18px; padding: 0 6px; margin-left: auto; }
+  </style>
+</head>
+<body>
+<div id="vfe">
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hdr-titles">
+      <div class="hdr-title">Vocal Function Exercises</div>
+      <div class="hdr-sub">Stemple Method · Home Practice</div>
+    </div>
+    <div class="hdr-chip" id="voice-chip" onclick="showGenderScreen()" style="display:none">
+      <div class="hdr-chip-dot"></div>
+      <span id="vc-label">Female</span>
+      <span style="opacity:0.5;font-size:10px;margin-left:2px">▾</span>
+    </div>
+  </div>
+  <div class="prog-strip"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+
+  <!-- Install prompt -->
+  <div id="install-banner">
+    <div class="ib-row">
+      <span>Add this app to your home screen for easy daily access.</span>
+      <button onclick="installApp()">Add to home screen</button>
+      <button class="ib-dismiss" onclick="dismissInstall()">✕</button>
+    </div>
+  </div>
+
+  <!-- Gender screen -->
+  <div id="screen-gender" class="screen active">
+    <div class="gender-wrap">
+      <div class="g-eyebrow">Getting started</div>
+      <div class="g-heading">Select your voice type</div>
+      <div class="g-sub">This sets the correct pitch targets for each exercise. You can change it at any time using the button in the top corner.</div>
+      <div class="g-grid">
+        <div class="g-card" onclick="setGender('female')">
+          <div class="g-sym">♀</div>
+          <div class="g-lbl">Female</div>
+          <div class="g-note">Warm-Up target:<br><strong>F4 · 349 Hz</strong><br>(above middle C)</div>
+        </div>
+        <div class="g-card" onclick="setGender('male')">
+          <div class="g-sym">♂</div>
+          <div class="g-lbl">Male</div>
+          <div class="g-note">Warm-Up target:<br><strong>F3 · 175 Hz</strong><br>(below middle C)</div>
+        </div>
+      </div>
+      <div class="g-banner">Practice 2 times per day, 5 days per week, for 5–8 weeks. Use an upright posture and breathe from your diaphragm (belly moves outward).</div>
+    </div>
+  </div>
+
+  <!-- Exercise screen -->
+  <div id="screen-exercise" class="screen">
+    <div class="ex-wrap">
+      <div class="step-row" id="step-row"></div>
+      <div id="exercise-panel"></div>
+    </div>
+  </div>
+
+  <!-- Done screen -->
+  <div id="screen-done" class="screen">
+    <div class="done-wrap">
+      <div class="done-icon">★</div>
+      <div class="done-heading">Session complete!</div>
+      <div class="done-sub">Great work. Consistent daily practice over 5–8 weeks produces the best results.</div>
+      <div class="done-grid" id="done-stats"></div>
+      <button class="done-btn" onclick="startSession()">Start another session</button>
+      <button class="done-btn-sec" onclick="showGenderScreen()">Change voice type</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EX = {
+  female:[
+    {id:'warmup',label:'Warm-Up',num:1,desc:'Sustain the vowel "eee" on F4 for as long as possible. Use a light, forward-focused voice — imagine the sound resonating just behind your front teeth. The timer starts automatically when you begin voicing.',targets:[{note:'F4',freq:349.23,label:'F4 · 349 Hz'}],type:'sustain',word:'eee'},
+    {id:'stretch',label:'Stretch',num:2,desc:'On "whoop" or "null," glide smoothly from your lowest comfortable pitch up to your highest — like a siren rising. Keep the voice light and connected across the full range without any breaks.',targets:[],type:'glide-up',word:'whoop / null'},
+    {id:'contract',label:'Contract',num:3,desc:'On "boom" or "null," glide smoothly from a comfortable high pitch all the way down to your lowest — siren going downward. Keep the voice connected throughout without breaks or register shifts.',targets:[],type:'glide-down',word:'boom / null'},
+    {id:'power',label:'Power',num:4,desc:'Sustain each note of the scale C–D–E–F–G for at least 3 seconds on "old" or "knoll." Each note is its own attempt. Tap the note button to hear the target pitch before you sing it.',targets:[{note:'C4',freq:261.63},{note:'D4',freq:293.66},{note:'E4',freq:329.63},{note:'F4',freq:349.23},{note:'G4',freq:392.00}].map(n=>({...n,label:n.note})),type:'power',word:'old / knoll'}
+  ],
+  male:[
+    {id:'warmup',label:'Warm-Up',num:1,desc:'Sustain the vowel "eee" on F3 for as long as possible. Use a light, forward-focused voice — imagine the sound resonating just behind your front teeth. The timer starts automatically when you begin voicing.',targets:[{note:'F3',freq:174.61,label:'F3 · 175 Hz'}],type:'sustain',word:'eee'},
+    {id:'stretch',label:'Stretch',num:2,desc:'On "whoop" or "null," glide smoothly from your lowest comfortable pitch up to your highest — like a siren rising. Keep the voice light and connected across the full range without any breaks.',targets:[],type:'glide-up',word:'whoop / null'},
+    {id:'contract',label:'Contract',num:3,desc:'On "boom" or "null," glide smoothly from a comfortable high pitch all the way down to your lowest — siren going downward. Keep the voice connected throughout without breaks or register shifts.',targets:[],type:'glide-down',word:'boom / null'},
+    {id:'power',label:'Power',num:4,desc:'Sustain each note of the scale C–D–E–F–G for at least 3 seconds on "old" or "knoll." Each note is its own attempt. Tap the note button to hear the target pitch before you sing it.',targets:[{note:'C3',freq:130.81},{note:'D3',freq:146.83},{note:'E3',freq:164.81},{note:'F3',freq:174.61},{note:'G3',freq:196.00}].map(n=>({...n,label:n.note})),type:'power',word:'old / knoll'}
+  ]
+};
+
+const MIN_MS=3000,VAD_ON=0.018,VAD_OFF=0.012,VAD_DELAY=350,GLIDE_ST=8;
+let gender=null,currentEx=0;
+let micActive=false,audioCtx=null,analyser=null,micStream=null,rafId=null;
+let toneOsc=null,toneGain=null,activeToneNote=null;
+let pitchHistory=[];
+let setsState={},sessions=parseInt(localStorage.getItem('vfe_sessions')||'0');
+let streakDays=JSON.parse(localStorage.getItem('vfe_streak')||'[]');
+let bestTimes=JSON.parse(localStorage.getItem('vfe_best')||'{}');
+let vadActive=false,vadSilenceStart=null,timerStart=null,timerElapsed=0,timerAnimId=null;
+let glideMin=Infinity,glideMax=-Infinity,glideActive=false;
+let powerNoteIndex=0,powerNoteSets={};
+let deferredInstallPrompt=null;
+
+// PWA install prompt
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('install-banner').style.display = 'block';
+});
+function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(() => { deferredInstallPrompt = null; dismissInstall(); });
+}
+function dismissInstall() { document.getElementById('install-banner').style.display = 'none'; }
+window.addEventListener('appinstalled', () => dismissInstall());
+
+// Service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+}
+
+function setGender(g){
+  gender=g;
+  document.getElementById('vc-label').textContent=g==='female'?'Female':'Male';
+  document.getElementById('voice-chip').style.display='flex';
+  startSession();
+}
+function showGenderScreen(){
+  stopMic();stopTone();
+  showScreen('screen-gender');
+  document.getElementById('voice-chip').style.display='none';
+  document.getElementById('prog-fill').style.width='0%';
+}
+function startSession(){
+  currentEx=0;
+  Object.keys(setsState).forEach(k=>{if(k.startsWith(gender))setsState[k]=[false,false];});
+  for(let ni=0;ni<5;ni++){const k=pnKey(ni);powerNoteSets[k]=[false,false];}
+  powerNoteIndex=0;
+  showScreen('screen-exercise');
+  renderExercise(0);
+  updateProgress();
+}
+function showScreen(id){['screen-gender','screen-exercise','screen-done'].forEach(s=>{document.getElementById(s).classList.toggle('active',s===id);});}
+function updateProgress(){
+  const exs=EX[gender],total=exs.length;
+  document.getElementById('prog-fill').style.width=Math.round((currentEx/total)*100)+'%';
+  const row=document.getElementById('step-row');let html='';
+  exs.forEach((ex,i)=>{
+    if(i>0)html+=`<div class="step-line${i<=currentEx?' done-line':''}"></div>`;
+    const cls=i<currentEx?'done-pip':i===currentEx?'active-pip':'';
+    html+=`<div class="step-pip ${cls}">${i<currentEx?'✓':(i+1)}</div>`;
+  });
+  row.innerHTML=html;
+}
+
+function renderExercise(i){
+  const ex=EX[gender][i],panel=document.getElementById('exercise-panel');
+  const isPower=ex.type==='power',isSustain=ex.type==='sustain';
+  const sk=`${gender}-${ex.id}`;if(!setsState[sk])setsState[sk]=[false,false];
+
+  const tpills=(!isPower&&ex.targets.length)?`<div class="target-row">${ex.targets.map(t=>`<span class="target-pill">${t.label}</span>`).join('')}</div>`:'';
+  let toneHTML='';
+  if(isSustain){toneHTML=`<div class="clabel">Hear the target pitch</div><div class="tone-row">${ex.targets.map(t=>`<button class="tone-btn" id="tone-${t.note}" onclick="toggleTone('${t.note}',${t.freq})">♪ ${t.note}</button>`).join('')}</div>`;}
+  else if(!isPower){toneHTML=`<div class="glide-tip"><strong>How it counts:</strong> Complete a connected sweep of 8 or more semitones and the set records automatically.</div>`;}
+  const powerHTML=isPower?buildPowerGrid(ex):'';
+
+  let timerHTML='';
+  if(isSustain){const k=`${gender}-${ex.id}-timer`;const b=bestTimes[k];const bl=b!=null?(b/10).toFixed(1)+'s':'—';
+  timerHTML=`<div class="clabel">Phonation timer — 3 second minimum</div>
+  <div class="timer-card">
+    <svg class="timer-ring" width="68" height="68" viewBox="0 0 68 68">
+      <circle cx="34" cy="34" r="27" fill="none" stroke="#d0daea" stroke-width="5"/>
+      <circle id="timer-arc" cx="34" cy="34" r="27" fill="none" stroke="#C69214" stroke-width="5" stroke-dasharray="169.6" stroke-dashoffset="169.6" stroke-linecap="round"/>
+    </svg>
+    <div class="timer-right">
+      <div class="timer-display" id="timer-display">0<span class="timer-dec">.0</span></div>
+      <div class="timer-status" id="timer-status">Waiting for voice...</div>
+      <div class="timer-best">Personal best: <strong id="timer-best-label">${bl}</strong></div>
+    </div>
+  </div>`;}
+
+  const setsNote=isPower?'3 sec min per note':isSustain?'3 sec minimum':'8+ semitone sweep';
+  let setsInner='';
+  if(isPower){const t=cPT();setsInner=`<span style="font-size:28px;font-weight:300;color:var(--navy)">${t}</span><span style="font-size:14px;color:var(--text-muted);margin-left:8px">/ 10 note sets</span>`;}
+  else{setsInner=[0,1].map(idx=>`<div class="set-bub${setsState[sk][idx]?' done':''}" id="bub-${sk}-${idx}">${setsState[sk][idx]?'✓':(idx+1)}</div>`).join('');}
+
+  const nextLabel=i<EX[gender].length-1?`Continue to ${EX[gender][i+1].label} →`:'Finish session';
+  const setsComplete=isPower?(cPT()===10):(setsState[sk].every(Boolean));
+
+  panel.innerHTML=`<div class="ex-card">
+    <div class="ex-badge">Exercise ${ex.num} of 4</div>
+    <div class="ex-title">${ex.label}</div>
+    <div class="ex-word">Sing on: <strong>${ex.word}</strong></div>
+    <div class="ex-desc">${ex.desc}</div>
+    ${tpills}${toneHTML}${powerHTML}${timerHTML}
+    <div class="clabel">Live pitch monitor</div>
+    <div class="pitch-mon">
+      <div class="pitch-top">
+        <div class="pitch-hz" id="live-hz">—<span>Hz</span></div>
+        <div class="pitch-note-lbl" id="live-note">—</div>
+      </div>
+      <div class="pitch-canvas-wrap"><canvas id="pitch-canvas" height="60"></canvas></div>
+      <div class="pitch-bar-wrap"><div id="pitch-bar"></div></div>
+      <div class="pitch-zones">${zoneLabels(ex)}</div>
+      <div class="mic-row">
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">
+          <span class="mic-dot" id="mic-dot"></span>
+          <span id="mic-label">Start microphone</span>
+        </button>
+        <span class="mic-hint">Mic required</span>
+      </div>
+    </div>
+    <div class="sets-card">
+      <div class="sets-top"><span class="sets-title" id="sets-title">${getSetsDisplay(ex)}</span><span class="sets-note">${setsNote}</span></div>
+      <div class="sets-row" id="sets-row">${setsInner}</div>
+    </div>
+  </div>
+  <button class="next-btn${setsComplete?' ready':''}" id="next-btn" onclick="nextExercise()">${nextLabel}</button>
+  <button class="skip-btn" onclick="nextExercise()">Skip this exercise</button>`;
+
+  pitchHistory=[];drawCanvas([],ex);
+  vadActive=false;vadSilenceStart=null;timerElapsed=0;updateTimerDisplay(0,false);
+  glideMin=Infinity;glideMax=-Infinity;glideActive=false;
+  if(isPower)powerNoteIndex=getNextPN();
+}
+
+function nextExercise(){
+  stopMic();stopTone();currentEx++;
+  if(currentEx>=EX[gender].length){showDoneScreen();return;}
+  updateProgress();renderExercise(currentEx);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showDoneScreen(){
+  sessions++;localStorage.setItem('vfe_sessions',sessions);
+  const today=new Date().toDateString();
+  if(!streakDays.includes(today)){streakDays.push(today);localStorage.setItem('vfe_streak',JSON.stringify(streakDays));}
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('done-stats').innerHTML=`<div class="done-stat"><div class="done-stat-val">${sessions}</div><div class="done-stat-lbl">Total sessions</div></div><div class="done-stat"><div class="done-stat-val">${streakDays.length}</div><div class="done-stat-lbl">Day streak</div></div>`;
+  showScreen('screen-done');
+}
+
+function buildPowerGrid(ex){
+  powerNoteIndex=getNextPN();
+  let html=`<div class="clabel">Scale notes — tap to hear each pitch</div><div class="power-grid">`;
+  ex.targets.forEach((t,ni)=>{
+    const k=pnKey(ni);if(!powerNoteSets[k])powerNoteSets[k]=[false,false];
+    const sets=powerNoteSets[k],done=sets.every(Boolean),isAct=!done&&ni===powerNoteIndex;
+    const cls=done?'done-note':isAct?'active-note':'';
+    const status=done?'Done':isAct?'Current':sets[0]?'1 / 2':'';
+    html+=`<div class="pnc ${cls}" id="pnc-${ni}">
+      <div class="pnc-name">${t.note}</div><div class="pnc-freq">${Math.round(t.freq)} Hz</div>
+      <button class="pnc-tbtn tone-btn" id="tone-${t.note}" onclick="toggleTone('${t.note}',${t.freq})">♪ ${t.note}</button>
+      <div class="pnc-status">${status}</div><div class="pnc-timer" id="pnc-timer-${ni}"></div>
+    </div>`;
+  });
+  return html+'</div>';
+}
+function pnKey(ni){return `${gender}-power-note-${ni}`;}
+function getNextPN(){for(let ni=0;ni<5;ni++){const k=pnKey(ni);if(!powerNoteSets[k])powerNoteSets[k]=[false,false];if(!powerNoteSets[k].every(Boolean))return ni;}return 4;}
+function cPT(){let n=0;for(let ni=0;ni<5;ni++){const k=pnKey(ni);if(powerNoteSets[k])n+=powerNoteSets[k].filter(Boolean).length;}return n;}
+function getSetsDisplay(ex){if(ex.type==='power'){const t=cPT();return t===10?'10/10 — Complete!':t+'/10 sets complete';}const k=`${gender}-${ex.id}`;if(!setsState[k])setsState[k]=[false,false];const n=setsState[k].filter(Boolean).length;return n===0?'0 / 2 sets — ready to begin':n===1?'1 / 2 sets — one more to go':'2 / 2 sets — complete!';}
+function zoneLabels(ex){if(ex.type==='sustain'&&ex.targets.length){const f=ex.targets[0].freq;return `<span>${Math.round(f*0.9)} Hz</span><span style="color:var(--gold)">Target: ${ex.targets[0].label}</span><span>${Math.round(f*1.1)} Hz</span>`;}if(ex.type==='power'){const exd=EX[gender][currentEx];return `<span>${Math.round(exd.targets[0].freq)} Hz</span><span style="color:rgba(255,255,255,0.45)">Power range</span><span>${Math.round(exd.targets[4].freq)} Hz</span>`;}return `<span>Low</span><span style="color:rgba(255,255,255,0.4)">Pitch trace</span><span>High</span>`;}
+function checkNextBtn(){const ex=EX[gender][currentEx];const done=ex.type==='power'?(cPT()===10):(setsState[`${gender}-${ex.id}`]||[false,false]).every(Boolean);const btn=document.getElementById('next-btn');if(btn)btn.classList.toggle('ready',done);}
+
+function processVAD(rms,freq,ex){
+  const isPower=ex.type==='power',isSustain=ex.type==='sustain',isGlide=ex.type==='glide-up'||ex.type==='glide-down';
+  const now=performance.now();
+  if(isSustain||isPower){
+    if(!vadActive){if(rms>=VAD_ON&&freq>0){vadActive=true;vadSilenceStart=null;timerStart=now-timerElapsed*100;setTStatus('phonating','Phonating...');if(!timerAnimId)runTA(isPower?powerNoteIndex:-1);}}
+    else{if(rms<VAD_OFF||freq<0){if(!vadSilenceStart)vadSilenceStart=now;else if(now-vadSilenceStart>=VAD_DELAY){const elapsed=timerElapsed;vadActive=false;vadSilenceStart=null;if(timerAnimId){cancelAnimationFrame(timerAnimId);timerAnimId=null;}setTStatus('','Waiting for voice...');if(elapsed*100>=MIN_MS){if(isPower)completePNN(ex,elapsed);else{recordBest(`${gender}-${ex.id}-timer`,elapsed);autoSet(ex);}}timerElapsed=0;updateTimerDisplay(0,false);if(isPower){const pt=document.getElementById(`pnc-timer-${powerNoteIndex}`);if(pt)pt.textContent='';}}}else vadSilenceStart=null;}
+  } else if(isGlide){
+    if(rms>=VAD_ON&&freq>0){if(!glideActive){glideActive=true;glideMin=freq;glideMax=freq;vadSilenceStart=null;}else{glideMin=Math.min(glideMin,freq);glideMax=Math.max(glideMax,freq);}}
+    else if(glideActive){if(!vadSilenceStart)vadSilenceStart=now;else if(now-vadSilenceStart>=VAD_DELAY){const st=glideMax>glideMin?12*Math.log2(glideMax/glideMin):0;glideActive=false;glideMin=Infinity;glideMax=-Infinity;vadSilenceStart=null;if(st>=GLIDE_ST)autoSet(ex);}}
+    else vadSilenceStart=null;
+  }
+}
+function completePNN(ex,elapsed){const ni=powerNoteIndex,k=pnKey(ni);if(!powerNoteSets[k])powerNoteSets[k]=[false,false];const sets=powerNoteSets[k],idx=sets[0]?(sets[1]?-1:1):0;if(idx<0){powerNoteIndex=getNextPN();refreshPG(ex);return;}sets[idx]=true;recordBest(`${gender}-power-note-${ni}-timer`,elapsed);powerNoteIndex=getNextPN();refreshPG(ex);refreshSets(ex);checkNextBtn();if(cPT()===10)autoNext(ex);}
+function refreshPG(ex){ex.targets.forEach((t,ni)=>{const card=document.getElementById(`pnc-${ni}`);if(!card)return;const k=pnKey(ni);if(!powerNoteSets[k])powerNoteSets[k]=[false,false];const sets=powerNoteSets[k],done=sets.every(Boolean),isAct=!done&&ni===powerNoteIndex;card.className='pnc '+(done?'done-note':isAct?'active-note':'');const st=card.querySelector('.pnc-status');if(st)st.textContent=done?'Done':isAct?'Current':sets[0]?'1 / 2':''});}
+function autoSet(ex){const k=`${gender}-${ex.id}`;if(!setsState[k])setsState[k]=[false,false];const sets=setsState[k],idx=sets[0]?(sets[1]?-1:1):0;if(idx<0)return;sets[idx]=true;const b=document.getElementById(`bub-${k}-${idx}`);if(b){b.classList.add('done');b.textContent='✓';void b.offsetWidth;b.style.animation='';b.classList.add('flash');}refreshSets(ex);checkNextBtn();if(sets.every(Boolean))autoNext(ex);}
+function autoNext(ex){setTimeout(()=>{const btn=document.getElementById('next-btn');if(btn&&btn.classList.contains('ready'))nextExercise();},1200);}
+function refreshSets(ex){const t=document.getElementById('sets-title');if(t)t.textContent=getSetsDisplay(ex);const r=document.getElementById('sets-row');if(r){if(ex.type==='power'){const tot=cPT();r.innerHTML=`<span style="font-size:28px;font-weight:300;color:var(--navy)">${tot}</span><span style="font-size:14px;color:var(--text-muted);margin-left:8px">/ 10 note sets</span>`;}else{const k=`${gender}-${ex.id}`;if(!setsState[k])setsState[k]=[false,false];r.innerHTML=[0,1].map(idx=>`<div class="set-bub${setsState[k][idx]?' done':''}" id="bub-${k}-${idx}">${setsState[k][idx]?'✓':(idx+1)}</div>`).join('');}}}
+function recordBest(key,elapsed){if(bestTimes[key]==null||elapsed>bestTimes[key]){bestTimes[key]=elapsed;localStorage.setItem('vfe_best',JSON.stringify(bestTimes));const bl=document.getElementById('timer-best-label');if(bl)bl.textContent=(elapsed/10).toFixed(1)+'s';}}
+
+function runTA(noteIdx){if(!vadActive)return;const now=performance.now();timerElapsed=Math.floor((now-timerStart)/100);updateTimerDisplay(timerElapsed,true);if(noteIdx>=0){const pt=document.getElementById(`pnc-timer-${noteIdx}`);if(pt)pt.textContent=Math.floor(timerElapsed/10)+'.'+(timerElapsed%10)+'s';}timerAnimId=requestAnimationFrame(()=>runTA(noteIdx));}
+function updateTimerDisplay(tenths,running){const d=document.getElementById('timer-display');if(d)d.innerHTML=`${Math.floor(tenths/10)}<span class="timer-dec">.${tenths%10}</span>`;const arc=document.getElementById('timer-arc');if(arc){arc.setAttribute('stroke-dashoffset',(169.6*(1-Math.min(1,(tenths/10)/30))).toFixed(1));arc.setAttribute('stroke',running?'#C69214':'#d0daea');}}
+function setTStatus(cls,text){const el=document.getElementById('timer-status');if(el){el.className='timer-status '+(cls||'');el.textContent=text;}}
+
+async function toggleMic(){if(micActive){stopMic();return;}try{micStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});audioCtx=new(window.AudioContext||window.webkitAudioContext)();analyser=audioCtx.createAnalyser();analyser.fftSize=2048;audioCtx.createMediaStreamSource(micStream).connect(analyser);micActive=true;document.getElementById('mic-btn').classList.add('active');document.getElementById('mic-dot').classList.add('pulse');document.getElementById('mic-label').textContent='Stop microphone';runPL();}catch(e){document.getElementById('mic-label').textContent='Mic access denied';}}
+function stopMic(){micActive=false;if(rafId){cancelAnimationFrame(rafId);rafId=null;}if(timerAnimId){cancelAnimationFrame(timerAnimId);timerAnimId=null;}if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}if(audioCtx){audioCtx.close();audioCtx=null;}vadActive=false;vadSilenceStart=null;timerElapsed=0;glideActive=false;glideMin=Infinity;glideMax=-Infinity;const btn=document.getElementById('mic-btn');if(btn)btn.classList.remove('active');const dot=document.getElementById('mic-dot');if(dot)dot.classList.remove('pulse');const lbl=document.getElementById('mic-label');if(lbl)lbl.textContent='Start microphone';updateTimerDisplay(0,false);setTStatus('','Waiting for voice...');}
+
+function runPL(){if(!micActive||!analyser)return;const buf=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(buf);let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);const freq=autocorr(buf,audioCtx.sampleRate);const ex=EX[gender][currentEx];const hEl=document.getElementById('live-hz'),nEl=document.getElementById('live-note'),bar=document.getElementById('pitch-bar');
+if(freq>60&&freq<1200){if(hEl)hEl.innerHTML=`${Math.round(freq)}<span>Hz</span>`;if(nEl)nEl.textContent=f2n(freq);pitchHistory.push(freq);let lo=80,hi=900;if(ex.type==='sustain'&&ex.targets.length){lo=ex.targets[0].freq*0.7;hi=ex.targets[0].freq*1.3;}else if(ex.type==='power'){lo=ex.targets[0].freq*0.8;hi=ex.targets[ex.targets.length-1].freq*1.2;}else{lo=60;hi=1200;}const pct=Math.min(100,Math.max(0,((freq-lo)/(hi-lo))*100));if(bar){bar.style.width=pct+'%';if(ex.type==='sustain'&&ex.targets.length){const d=Math.abs(freq-ex.targets[0].freq)/ex.targets[0].freq;bar.style.background=d<0.03?'#1a7a4a':d<0.07?'#C69214':'#c0392b';}else if(ex.type==='power'&&powerNoteIndex<ex.targets.length){const d=Math.abs(freq-ex.targets[powerNoteIndex].freq)/ex.targets[powerNoteIndex].freq;bar.style.background=d<0.03?'#1a7a4a':d<0.07?'#C69214':'#c0392b';}else bar.style.background='#C69214';}}
+else{if(hEl)hEl.innerHTML='—<span>Hz</span>';if(nEl)nEl.textContent='—';pitchHistory.push(null);if(bar)bar.style.width='0%';}
+if(pitchHistory.length>120)pitchHistory.shift();drawCanvas(pitchHistory,ex);processVAD(rms,freq>60?freq:-1,ex);rafId=requestAnimationFrame(runPL);}
+
+function drawCanvas(history,ex){const canvas=document.getElementById('pitch-canvas');if(!canvas)return;const w=canvas.parentElement.offsetWidth||400;canvas.width=w;canvas.height=60;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,w,60);let lo=80,hi=900;if(ex.type==='sustain'&&ex.targets.length){lo=ex.targets[0].freq*0.7;hi=ex.targets[0].freq*1.3;}else if(ex.type==='power'){lo=ex.targets[0].freq*0.8;hi=ex.targets[ex.targets.length-1].freq*1.2;}else{lo=80;hi=1000;}if(ex.targets.length&&(ex.type==='sustain'||ex.type==='power')){ctx.strokeStyle='rgba(198,146,20,0.4)';ctx.lineWidth=1;ex.targets.forEach(t=>{const y=60-((t.freq-lo)/(hi-lo))*60;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();});}ctx.strokeStyle='#C69214';ctx.lineWidth=2;ctx.beginPath();let started=false;history.forEach((f,i)=>{if(!f){started=false;return;}const x=(i/120)*w,y=60-((f-lo)/(hi-lo))*60;if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);});ctx.stroke();}
+
+function autocorr(buf,sr){let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);if(rms<0.008)return -1;let r1=0,r2=buf.length-1;const th=0.2;for(let i=0;i<buf.length/2;i++){if(Math.abs(buf[i])<th){r1=i;break;}}for(let i=1;i<buf.length/2;i++){if(Math.abs(buf[buf.length-i])<th){r2=buf.length-i;break;}}const c=buf.slice(r1,r2),n=c.length,corr=new Float32Array(n);for(let i=0;i<n;i++)for(let j=0;j<n-i;j++)corr[i]+=c[j]*c[j+i];let d=1;while(corr[d]>corr[d+1])d++;let mv=-1,mp=-1;for(let i=d;i<n;i++){if(corr[i]>mv){mv=corr[i];mp=i;}}if(mp<0)return -1;let T=mp;const x1=corr[T-1],x2=corr[T],x3=T+1<n?corr[T+1]:corr[T];const a=(x1+x3-2*x2)/2,b=(x3-x1)/2;if(a)T-=b/(2*a);return sr/T;}
+
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function f2n(f){const n=12*Math.log2(f/440)+69,m=Math.round(n);return NN[m%12]+(Math.floor(m/12)-1);}
+
+function toggleTone(note,freq){if(activeToneNote===note){stopTone();return;}stopTone();if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();toneOsc=audioCtx.createOscillator();toneGain=audioCtx.createGain();toneOsc.type='sine';toneOsc.frequency.setValueAtTime(freq,audioCtx.currentTime);toneGain.gain.setValueAtTime(0,audioCtx.currentTime);toneGain.gain.linearRampToValueAtTime(0.3,audioCtx.currentTime+0.05);toneGain.gain.linearRampToValueAtTime(0,audioCtx.currentTime+2.0);toneOsc.connect(toneGain);toneGain.connect(audioCtx.destination);toneOsc.start();toneOsc.stop(audioCtx.currentTime+2.1);activeToneNote=note;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.toggle('playing',b.id==='tone-'+note));setTimeout(()=>{activeToneNote=null;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));},2200);}
+function stopTone(){if(toneOsc){try{toneGain.gain.setValueAtTime(0,audioCtx.currentTime);toneOsc.stop();}catch(e){}toneOsc=null;toneGain=null;}activeToneNote=null;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));}
+</script>
+</body>
+</html>

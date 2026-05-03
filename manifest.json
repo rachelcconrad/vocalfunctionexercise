@@ -1,0 +1,24 @@
+{
+  "name": "Vocal Function Exercises",
+  "short_name": "VFE Practice",
+  "description": "Guided home practice for Vocal Function Exercises — Stemple Method",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#182B49",
+  "theme_color": "#182B49",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
