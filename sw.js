@@ -1,4 +1,4 @@
-const CACHE = 'vfe-v1';
+const CACHE = 'vfe-v3';
 const ASSETS = [
   './',
   './index.html',
