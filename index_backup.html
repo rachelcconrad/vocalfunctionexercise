@@ -87,8 +87,6 @@
     .step-pip.active-pip { background: var(--gold); border-color: var(--gold-dark); color: var(--navy); }
     .step-line { flex: 1; height: 2px; background: var(--border); border-radius: 1px; }
     .step-line.done-line { background: var(--navy); }
-    .flow-hint { display:flex; align-items:center; gap:10px; background:var(--gold-light); border:1px solid var(--gold-mid); border-radius:var(--r-md); padding:11px 14px; margin-bottom:16px; font-size:13px; color:var(--gold-dark); line-height:1.5; }
-    .flow-hint-icon { font-size:18px; flex-shrink:0; }
     .ex-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; margin-bottom: 14px; box-shadow: 0 1px 6px rgba(24,43,73,0.05); }
     .ex-badge { display: inline-block; background: var(--gold-light); border: 1px solid var(--gold-mid); color: var(--gold-dark); font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.02em; }
     .ex-title { font-family: 'Source Serif 4', serif; font-size: 22px; font-weight: 400; color: var(--navy); margin-bottom: 4px; }
@@ -230,10 +228,6 @@
   <div id="screen-exercise" class="screen">
     <div class="ex-wrap">
       <div class="step-row" id="step-row"></div>
-      <div class="flow-hint">
-        <span class="flow-hint-icon">→</span>
-        <span>Complete each exercise and the app will automatically move you to the next one. Just follow along.</span>
-      </div>
       <div id="exercise-panel"></div>
     </div>
   </div>
@@ -480,37 +474,8 @@ function autocorr(buf,sr){let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 function f2n(f){const n=12*Math.log2(f/440)+69,m=Math.round(n);return NN[m%12]+(Math.floor(m/12)-1);}
 
-async function toggleTone(note,freq){
-  if(activeToneNote===note){stopTone();return;}
-  stopTone();
-  // Always create a fresh AudioContext for tone playback — never reuse a closed one
-  const toneCtx=new(window.AudioContext||window.webkitAudioContext)();
-  // iOS/Chrome may start suspended; resume must be called inside a user gesture (we are in onclick, so this works)
-  if(toneCtx.state==='suspended') await toneCtx.resume();
-  toneOsc=toneCtx.createOscillator();
-  toneGain=toneCtx.createGain();
-  toneOsc.type='sine';
-  toneOsc.frequency.setValueAtTime(freq,toneCtx.currentTime);
-  toneGain.gain.setValueAtTime(0,toneCtx.currentTime);
-  toneGain.gain.linearRampToValueAtTime(0.35,toneCtx.currentTime+0.05);
-  toneGain.gain.linearRampToValueAtTime(0,toneCtx.currentTime+2.0);
-  toneOsc.connect(toneGain);toneGain.connect(toneCtx.destination);
-  toneOsc.start();toneOsc.stop(toneCtx.currentTime+2.1);
-  // Store ctx on the oscillator so stopTone can close it
-  toneOsc._ctx=toneCtx;
-  activeToneNote=note;
-  document.querySelectorAll('.tone-btn').forEach(b=>b.classList.toggle('playing',b.id==='tone-'+note));
-  setTimeout(()=>{activeToneNote=null;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));toneOsc=null;toneGain=null;try{toneCtx.close();}catch(e){}},2300);
-}
-function stopTone(){
-  if(toneOsc){
-    try{if(toneGain&&toneOsc._ctx)toneGain.gain.setValueAtTime(0,toneOsc._ctx.currentTime);toneOsc.stop();}catch(e){}
-    try{if(toneOsc._ctx)toneOsc._ctx.close();}catch(e){}
-    toneOsc=null;toneGain=null;
-  }
-  activeToneNote=null;
-  document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));
-}
+function toggleTone(note,freq){if(activeToneNote===note){stopTone();return;}stopTone();if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();toneOsc=audioCtx.createOscillator();toneGain=audioCtx.createGain();toneOsc.type='sine';toneOsc.frequency.setValueAtTime(freq,audioCtx.currentTime);toneGain.gain.setValueAtTime(0,audioCtx.currentTime);toneGain.gain.linearRampToValueAtTime(0.3,audioCtx.currentTime+0.05);toneGain.gain.linearRampToValueAtTime(0,audioCtx.currentTime+2.0);toneOsc.connect(toneGain);toneGain.connect(audioCtx.destination);toneOsc.start();toneOsc.stop(audioCtx.currentTime+2.1);activeToneNote=note;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.toggle('playing',b.id==='tone-'+note));setTimeout(()=>{activeToneNote=null;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));},2200);}
+function stopTone(){if(toneOsc){try{toneGain.gain.setValueAtTime(0,audioCtx.currentTime);toneOsc.stop();}catch(e){}toneOsc=null;toneGain=null;}activeToneNote=null;document.querySelectorAll('.tone-btn').forEach(b=>b.classList.remove('playing'));}
 </script>
 </body>
 </html>
